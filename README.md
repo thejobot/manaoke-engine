@@ -110,8 +110,15 @@ emptied out and its identity as placeholders.
 
 See `THIRD-PARTY.md` for the vendored dictionaries and fonts and their terms.
 
+### Licence
+
+MIT — see `LICENSE`. That covers this project's own code. The vendored
+dictionaries and fonts keep their own terms; see `THIRD-PARTY.md`.
+
+Lyrics, translations and recordings are not covered by anything here, because
+none of them are here. Whatever you feed the engine stays your problem.
+
 ### Status
 
-Extracted from a working private repository, and still missing two things: a
-licence for the project's own code, and one example song that can legally ship so
-a fresh clone has something to build.
+Extracted from a working private repository. Still missing one example song that
+can legally ship, so a fresh clone has the machinery but nothing to build yet.
