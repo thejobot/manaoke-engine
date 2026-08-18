@@ -1,0 +1,11 @@
+openjtalk_dict.tar.xz — the Open JTalk / mecab-naist-jdic dictionary, vendored so
+the pitch pipeline resolves it locally and pyopenjtalk-plus never downloads it.
+_dict_bootstrap.py extracts it to ./openjtalk_dict/ (gitignored) on first run and
+points OPEN_JTALK_DICT_DIR at it.
+
+Dictionary: mecab-naist-jdic, © 2009 Nara Institute of Science and Technology
+(NAIST), Japan. BSD-style licence (see dictionary/COPYING inside the archive).
+Bundled by / distributed with Open JTalk (http://open-jtalk.sourceforge.net/).
+
+The accent data (kanjium_accents.txt) is separate: © the kanjium project,
+CC-BY-SA; NHK-derived pitch-accent entries.

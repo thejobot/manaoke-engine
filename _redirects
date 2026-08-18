@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects.
+# The assemble step appends three asset rules per song build; the Pages
+# Function in functions/ intercepts first, so these are documentation and
+# fallback. Watch the ~100 splat-rule cap.

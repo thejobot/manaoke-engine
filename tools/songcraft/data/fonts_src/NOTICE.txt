@@ -1,0 +1,10 @@
+Source TTFs for the per-song subset fonts (tools/songcraft/gen_fonts.py).
+
+  DotGothic16-Regular.ttf        (c) Fontworks Inc. — SIL Open Font License 1.1
+  MPLUSRounded1c-{Regular,Medium,Bold,ExtraBold}.ttf
+                                 (c) M+ FONTS PROJECT / Coji Morishita — SIL OFL 1.1
+
+Upstream: github.com/google/fonts  ofl/dotgothic16 + ofl/mplusrounded1c.
+Vendored 2026-07-07 so font-subset generation works fully offline (local-first);
+these are the exact bytes the ema / odoriko / shinunoga / silhouette2 /
+inochi-mijikashi subsets under /fonts/<song>/ were cut from.

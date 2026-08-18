@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manaoke Song Builder — Architecture</title>
+<style>
+  :root{
+    --bg:#0c0d12; --panel:#14161e; --panel2:#1a1d27; --ink:#e7e6ea; --dim:#9a9aa8;
+    --hair:#282b38; --hair2:#343849;
+    --local:#6ee7b7;   /* green  — a script runs it */
+    --cli:#b794f6;     /* purple — Claude/CLI authors it */
+    --ext:#fbbf24;     /* gold   — happens outside the box */
+    --gate:#f87171;    /* red    — hard gate / manual stop */
+    --hub:#60a5fa;     /* blue   — the assemble hub */
+    --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{
+    margin:0; background:
+      radial-gradient(120% 80% at 12% -10%, #17202b 0%, transparent 55%),
+      radial-gradient(120% 90% at 100% 0%, #1d1626 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:44px 22px 90px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:-.02em;margin:0 0 4px;font-weight:650}
+  .sub{color:var(--dim);font-size:14px;margin:0 0 4px}
+  .sub code{font-family:var(--mono);font-size:12.5px;color:#cfd0da;background:#00000030;padding:1px 5px;border-radius:4px}
+  .tag{font-family:var(--mono);font-size:11px;color:var(--dim)}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:20px 0 30px;padding:14px 16px;
+    border:1px solid var(--hair);border-radius:12px;background:var(--panel)}
+  .legend b{font-weight:600}
+  .lg{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--dim)}
+  .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .lg .k{color:var(--ink)}
+
+  /* section headers */
+  h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+    margin:38px 0 14px;font-weight:600;display:flex;align-items:center;gap:10px}
+  h2::after{content:"";height:1px;flex:1;background:var(--hair)}
+
+  /* two-col frame: spine + margin notes */
+  .flow{position:relative}
+  .phase{margin:0 0 6px}
+  .phase-band{display:flex;align-items:baseline;gap:12px;margin:22px 0 12px}
+  .phase-band .n{font-family:var(--mono);font-size:11px;color:#6b6f80;border:1px solid var(--hair2);
+    border-radius:5px;padding:1px 7px}
+  .phase-band .t{font-size:13px;color:var(--ink);font-weight:600;letter-spacing:.01em}
+  .phase-band .d{font-size:12px;color:var(--dim)}
+
+  .row{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:stretch}
+  @media(max-width:820px){.row{grid-template-columns:1fr}.note-col{order:2}}
+
+  .step{position:relative;display:flex;gap:13px;padding:12px 15px;margin:0 0 9px;
+    background:var(--panel);border:1px solid var(--hair);border-radius:11px;
+    border-left:3px solid var(--local)}
+  .step.cli{border-left-color:var(--cli)}
+  .step.ext{border-left-color:var(--ext)}
+  .step.hub{border-left-color:var(--hub);background:linear-gradient(180deg,#161d29,#14161e)}
+  .step.gate{border-left-color:var(--gate)}
+  .step .idx{font-family:var(--mono);font-size:11px;color:#5f6376;flex:none;width:20px;text-align:right;padding-top:2px}
+  .step .body{flex:1;min-width:0}
+  .step .h{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .step .name{font-weight:600;font-size:14.5px}
+  .step .what{color:var(--dim);font-size:12.8px;margin-top:3px}
+  .step .what code,.note code,.deploy code{font-family:var(--mono);font-size:11.5px;color:#c9d4e6;
+    background:#0d1a2610;background:#ffffff08;padding:1px 5px;border-radius:4px;white-space:nowrap}
+  .pill{font-family:var(--mono);font-size:10px;letter-spacing:.03em;padding:2px 7px;border-radius:20px;
+    border:1px solid var(--hair2);color:var(--dim);white-space:nowrap;flex:none}
+  .pill.owner-local{color:var(--local);border-color:#2c4b3e}
+  .pill.owner-cli{color:var(--cli);border-color:#3d3350}
+  .pill.owner-ext{color:var(--ext);border-color:#4a3d1f}
+  .pill.env{color:#9fb4d8;border-color:#2b3550}
+  .pill.stop{color:var(--gate);border-color:#4d2b2b;background:#f8717110}
+  .pill.subsumed{color:#7a7e8e;border-style:dashed}
+
+  .note-col{display:flex;flex-direction:column;gap:9px;justify-content:center}
+  .note{background:var(--panel2);border:1px solid var(--hair);border-radius:11px;padding:12px 14px;
+    font-size:12.6px;color:#c3c4d0}
+  .note .nt{font-weight:600;color:var(--ink);font-size:12.5px;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .note .nt .dot{width:7px;height:7px;border-radius:50%;flex:none}
+  .note.key{border-color:#2b3550;background:linear-gradient(180deg,#141b28,#14161e)}
+  .note.warn{border-color:#4a3d1f}
+
+  .arrow{text-align:center;color:#3a3e4d;font-size:13px;margin:-4px 0 5px;user-select:none}
+
+  /* orchestration + deploy panels */
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  @media(max-width:820px){.panels{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--hair);border-radius:13px;padding:18px 20px}
+  .panel h3{margin:0 0 10px;font-size:14px;font-weight:650}
+  .panel p{margin:0 0 9px;font-size:13px;color:#c3c4d0}
+  .panel code{font-family:var(--mono);font-size:11.8px;color:#c9d4e6;background:#ffffff08;padding:1px 5px;border-radius:4px}
+  .cmd{font-family:var(--mono);font-size:12px;background:#0a0c11;border:1px solid var(--hair);
+    border-radius:8px;padding:11px 13px;color:#b9c4d6;margin:10px 0;overflow-x:auto;white-space:pre}
+  .cmd .c{color:#6ee7b7}.cmd .a{color:#fbbf24}.cmd .m{color:#6b6f80}
+  .foot{margin-top:34px;color:#6b6f80;font-size:11.5px;text-align:center;font-family:var(--mono)}
+  .chip{display:inline-flex;gap:6px;align-items:center;font-size:11px;color:var(--dim);
+    border:1px solid var(--hair2);border-radius:6px;padding:2px 8px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Manaoke Song Builder — how a new song moves through the machine</h1>
+  <p class="sub">One orchestrator (<code>tools/songcraft/manaoke_build.py</code>) walks a fixed 19-step DAG. Each step is a <b>runner</b> function that shells out to the right tool in the right Python env. Per-song state lives in <code>builds/&lt;key&gt;.build_state.json</code>; the denmoku dashboard just renders that file.</p>
+  <p class="sub">Drive it: <code>run &lt;key&gt; &lt;step&gt;</code> for one step, or <code>run &lt;key&gt; --auto</code> to walk every auto-able step and <b>halt at the first gate or human-owned step</b>.</p>
+
+  <div class="legend">
+    <div class="lg"><span class="sw" style="background:var(--local)"></span><span class="k">local</span> — a script runs it (auto)</div>
+    <div class="lg"><span class="sw" style="background:var(--cli)"></span><span class="k">cli</span> — Claude authors it (manual stop)</div>
+    <div class="lg"><span class="sw" style="background:var(--ext)"></span><span class="k">external</span> — happens outside the box</div>
+    <div class="lg"><span class="sw" style="background:var(--gate)"></span><span class="k">gate / manual</span> — the walk stops here</div>
+    <div class="lg"><span class="sw" style="background:var(--hub)"></span><span class="k">assemble</span> — the hub step</div>
+    <div class="lg" style="margin-left:auto"><span class="pill env">env</span> which Python interpreter the runner shells into</div>
+  </div>
+
+  <!-- ================= FLOW ================= -->
+  <div class="flow">
+
+    <!-- PHASE A -->
+    <div class="phase-band"><span class="n">A</span><span class="t">Source</span><span class="d">lock the identity + pull timed lyrics</span></div>
+    <div class="row">
+      <div>
+        <div class="step">
+          <div class="idx">1</div>
+          <div class="body">
+            <div class="h"><span class="name">grab_song</span><span class="pill owner-local">local</span><span class="pill env">python3</span></div>
+            <div class="what">Locks song identity — JP/EN title, artist, YouTube id, iTunes artwork, Apple url, difficulty. <b>Everything downstream keys off this.</b> Creates <code>build_state.json</code>.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step ext">
+          <div class="idx">2</div>
+          <div class="body">
+            <div class="h"><span class="name">lyrics</span><span class="pill owner-ext">external</span><span class="pill stop">stops walk</span></div>
+            <div class="what">Per-syllable timed lyrics. Two interchangeable sources → same <code>builds/&lt;key&gt;.lyrics.json</code> shape: <b>Apple TTML</b> (via LyriCool, needs a signed-in music.apple.com tab) <b>or LRCLIB</b> (open DB, no auth, JP-store-only songs).</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note warn">
+          <div class="nt"><span class="dot" style="background:var(--ext)"></span>Two lyric sources, one shape</div>
+          Apple gives per-<em>word</em> timing; LRCLIB gives per-<em>line</em> timing that step 4 upgrades to word-level. Never scrape lyric HTML or reproduce from memory — only these two feed the contract.
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE B -->
+    <div class="phase-band"><span class="n">B</span><span class="t">Timing &amp; teaching data</span><span class="d">align to the real vocal, then author the lesson</span></div>
+    <div class="row">
+      <div>
+        <div class="step">
+          <div class="idx">3</div>
+          <div class="body">
+            <div class="h"><span class="name">furigana</span><span class="pill owner-local">local</span><span class="pill subsumed">subsumed → assemble</span></div>
+            <div class="what">Per-mora kana + romaji timings. Not a real pass — <code>content_to_data.py</code> derives them (pyopenjtalk + jaconv) inside <b>assemble</b>. Runner is a no-op-done so the walk stays honest.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">4</div>
+          <div class="body">
+            <div class="h"><span class="name">whisper_sync</span><span class="pill owner-local">local</span><span class="pill env">parler</span></div>
+            <div class="what">Demucs isolates the YouTube vocal stem → a CTC forced-aligner places each known lyric line on its sung onset (robust to intro silence + instrumental hallucination). <code>--words</code> gives LRCLIB songs Apple-grade per-word onsets.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step cli">
+          <div class="idx">5</div>
+          <div class="body">
+            <div class="h"><span class="name">author_data</span><span class="pill owner-cli">cli</span><span class="pill stop">stops walk</span></div>
+            <div class="what"><b>The teaching.</b> Write <code>data.json</code>: every study word (jp / romaji / jp_speak / gloss / spoken definition / in-line context / particle flag) + the per-line <code>LINE_TR</code> and <code>LINE_EXPLAIN</code> maps. AI drafts, the owner reviews.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note">
+          <div class="nt"><span class="dot" style="background:var(--local)"></span>Forced alignment, not transcription</div>
+          The aligner is constrained to the <em>known</em> lyric text, so it can't hallucinate the wrong words onto a breathy intro. Onsets/stems cache in <code>/tmp</code>.
+        </div>
+        <div class="note warn">
+          <div class="nt"><span class="dot" style="background:var(--gate)"></span>Language-safety is authored here</div>
+          Lone は → <code>jp_speak: わ</code>; spoken English only ever in <code>en_speak</code>/<code>context</code>/<code>gloss</code>. The validators (step 16) enforce what you author here.
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE C -->
+    <div class="phase-band"><span class="n">C</span><span class="t">Assemble — the hub</span><span class="d">clone prod, inject data, emit the audio job list</span></div>
+    <div class="row">
+      <div>
+        <div class="step hub">
+          <div class="idx">6</div>
+          <div class="body">
+            <div class="h"><span class="name">assemble</span><span class="pill owner-local">local</span><span class="pill env">python3</span></div>
+            <div class="what"><code>assemble_page.py</code> clones the current production page verbatim and swaps only <b>data + palette + paths</b>: injects <code>data.json</code>/manifest, splices <code>LINE_TR</code>/<code>LINE_EXPLAIN</code> literals, retargets YouTube id / titles / slug / og / canonical / chip, samples the cover for the <b>fully-universal palette</b> (field-c1/2/3/hi, fb blooms, body gradient), writes per-song <code>_redirects</code>, repoints fonts. Runs <code>content_to_data.py</code> first — which is why it's the hub.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note key">
+          <div class="nt"><span class="dot" style="background:var(--hub)"></span>Why assemble runs BEFORE audio</div>
+          <code>content_to_data.py</code> (inside assemble) emits <code>builds/&lt;key&gt;.audio_jobs.json</code> — the exact clip list the audio steps consume. No jobs file → nothing to render. Re-running assemble regenerates <code>index.html</code>, so <code>drill_concat</code> + version bump must re-run after.
+        </div>
+        <div class="note">
+          <div class="nt"><span class="dot" style="background:var(--hub)"></span>Faithful clone, gated</div>
+          <code>parity_audit.py</code> runs inside assemble and <b>hard-fails</b> if the page diverges from the template anywhere outside the known per-song regions. A song page <em>is</em> the prod page with swapped data.
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE D -->
+    <div class="phase-band"><span class="n">D</span><span class="t">Audio</span><span class="d">one engine renders EN + JP, QA'd on the shipped bytes, then concatenated</span></div>
+    <div class="row">
+      <div>
+        <div class="step">
+          <div class="idx">7</div>
+          <div class="body">
+            <div class="h"><span class="name">en_audio</span><span class="pill owner-local">local</span><span class="pill env">parler</span></div>
+            <div class="what">Spoken English (definitions, context, section intros, line explanations) — Kokoro <code>am_michael</code>, loudnorm −16 LUFS. The EN voice never speaks Japanese.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">8</div>
+          <div class="body">
+            <div class="h"><span class="name">jp_audio</span><span class="pill owner-local">local</span><span class="pill env">parler</span></div>
+            <div class="what">Every JP word + full line — Kokoro <code>jf_alpha</code>; lone particles routed to real human clips (never Kokoro). <b>Same <code>gen_audio.py</code> pass as step 7</b> — one run reads <code>audio_jobs.json</code> and renders both.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">9</div>
+          <div class="body">
+            <div class="h"><span class="name">compress</span><span class="pill owner-local">local</span><span class="pill subsumed">subsumed → gen_audio</span></div>
+            <div class="what">JP clips ship mono 80 kbps mp3 (~11 KB) so the word drill wins the cellular fetch race. <code>gen_audio.py</code> emits the final mp3 directly — no separate pass.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">10</div>
+          <div class="body">
+            <div class="h"><span class="name">pronunciation</span><span class="pill owner-local">local</span><span class="pill env">parler</span></div>
+            <div class="what">Whisper reads back every JP clip vs its expected kana on the <b>final served mp3</b>; a mispronounced word is swapped for an exact human recording. Particles need two corroborating read-backs before a swap.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">12</div>
+          <div class="body">
+            <div class="h"><span class="name">drill_concat</span><span class="pill owner-local">local</span><span class="pill env">python3 · ffmpeg</span></div>
+            <div class="what">Concatenates each line's word-by-word drill into ONE mp3 (word JP → gloss → … → full line → explanation) and re-injects the timing map, so the drill plays with a single tap. <b>Incremental</b> — unchanged lines skip ffmpeg.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note key">
+          <div class="nt"><span class="dot" style="background:var(--local)"></span>One engine, both languages</div>
+          Steps 7 &amp; 8 are the <em>same</em> <code>gen_audio.py</code> invocation — the DAG lists them separately for the dashboard, but the runner (<code>run_audio</code>) is shared. English jobs with CJK are hard-refused.
+        </div>
+        <div class="note warn">
+          <div class="nt"><span class="dot" style="background:var(--gate)"></span>QA runs on shipped bytes</div>
+          Read-back happens on the FINAL mono-mp3, not the wav master — “what ships is what was verified.” Clips are immutable-cached, so a fix only reaches devices via the <code>?v=</code> / <code>AUDIO_V</code> bump.
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE E -->
+    <div class="phase-band"><span class="n">E</span><span class="t">Enrichment</span><span class="d">pitch contours · immerse podcast · downloadable kit</span></div>
+    <div class="row">
+      <div>
+        <div class="step">
+          <div class="idx">11</div>
+          <div class="body">
+            <div class="h"><span class="name">pitch</span><span class="pill owner-local">local</span><span class="pill env">qwentts</span></div>
+            <div class="what">Pitch-accent contour per word (the animated pitch-card line) → <code>_assets/&lt;folder&gt;/pitch_data/pitch.json</code>. Engine pyopenjtalk-plus + kanjium, vendored + fully local. Incremental; a miss degrades to a plain mora row, never breaks.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step cli">
+          <div class="idx">13</div>
+          <div class="body">
+            <div class="h"><span class="name">podcast</span><span class="pill owner-cli">cli</span><span class="pill stop">stops walk</span></div>
+            <div class="what">Deep-research the song, write a two-host script (EN host never speaks JP; a dedicated JP voice reads the lyrics), render it. Owned by whichever model does research + TTS.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">14</div>
+          <div class="body">
+            <div class="h"><span class="name">podcast_align</span><span class="pill owner-local">local</span><span class="pill env">parler</span></div>
+            <div class="what">Force-aligns the finished podcast to its script → per-word <code>[token,time]</code> pairs, so every word (EN + JP) highlights exactly when spoken in Immerse.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">15</div>
+          <div class="body">
+            <div class="h"><span class="name">kits</span><span class="pill owner-local">local</span><span class="pill env">python3</span></div>
+            <div class="what">Builds the downloadable study kit — an Anki deck (embedded audio) + a printable double-sided flashcard PDF — hosted once in shared assets, wired into the Notes &amp; Resources box.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note">
+          <div class="nt"><span class="dot" style="background:var(--cli)"></span>The two human-owned pauses</div>
+          <code>author_data</code> and <code>podcast</code> are the only <em>content</em> steps a person drives. Everything between and after is a script. The <code>--auto</code> walk stops cleanly at each and tells you the exact command to resume.
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE F -->
+    <div class="phase-band"><span class="n">F</span><span class="t">Gate &amp; ship</span><span class="d">validators must pass 0, then preview → promote on the owner's word</span></div>
+    <div class="row">
+      <div>
+        <div class="step gate">
+          <div class="idx">16</div>
+          <div class="body">
+            <div class="h"><span class="name">validate</span><span class="pill owner-local">local</span><span class="pill env">python3 · parler</span><span class="pill stop">HARD GATE</span></div>
+            <div class="what"><code>validate_song.py</code> (coverage/integrity E1–E15) + <code>validate_tts_safety.py</code> (no EN-voice-with-CJK) + segmentation check. <b>All must pass 0 before deploy.</b> A failure marks the step <code>blocked</code> and stops the walk.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+          <div class="idx">17</div>
+          <div class="body">
+            <div class="h"><span class="name">landing_card</span><span class="pill owner-local">local</span><span class="pill env">python3</span></div>
+            <div class="what">Adds the Norelco library card — real album jacket + a card accent that MUST equal the song page's <code>--field-c1</code>. (Root landing is only repointed on promote.)</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step gate">
+          <div class="idx">18</div>
+          <div class="body">
+            <div class="h"><span class="name">deploy</span><span class="pill owner-local">local</span><span class="pill stop">manual · push once</span></div>
+            <div class="what">Commit + push so Cloudflare serves the private random-slug preview; verify live headless; hand over the bare URL. Manual by design — the rule is push ONCE at the end.</div>
+          </div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step gate">
+          <div class="idx">19</div>
+          <div class="body">
+            <div class="h"><span class="name">promote</span><span class="pill owner-local">local</span><span class="pill stop">on the owner's word only</span></div>
+            <div class="what">Only when the owner says keep it: copy the preview to the next <code>v0N</code>, set the chip, repoint the root landing. Never automatic.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-col">
+        <div class="note warn">
+          <div class="nt"><span class="dot" style="background:var(--gate)"></span>Gates halt the auto-walk</div>
+          In <code>do_run(--auto)</code>, a runner that returns not-ok sets the step <code>blocked</code> and <b>breaks the loop</b>. Auto=True steps with no wired runner refuse to silently skip — they stop loudly. That's the honesty guarantee.
+        </div>
+        <div class="note key">
+          <div class="nt"><span class="dot" style="background:var(--hub)"></span>Lean deploy model</div>
+          The build dir ships only <code>index.html · data.json · tts_manifest.json</code>. Audio/pitch live once in <code>_assets/&lt;song&gt;/</code>; a Worker (folder = deploy-dir prefix) routes <code>/songs/&lt;dir&gt;/audio/*</code> there. Asset folder name MUST equal the slug prefix.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ORCHESTRATION + DEPLOY ================= -->
+  <h2>How the code actually executes</h2>
+  <div class="panels">
+    <div class="panel">
+      <h3>Orchestrator loop</h3>
+      <p><code>manaoke_build.py</code> holds a canonical <code>STEPS</code> list (19 dicts: key, owner, auto flag, env-specific <code>cmd</code>). A <code>RUNNERS</code> map binds each step key to a Python function.</p>
+      <div class="cmd"><span class="c">do_run</span>(key, step, auto):
+  targets = <span class="m"># --auto → every auto & not-done step</span>
+  <span class="a">for</span> step <span class="a">in</span> targets:
+    runner = RUNNERS[step.key]
+    ok,msg = runner(st)           <span class="m"># shells out</span>
+    step.status = <span class="a">'done'</span> <span class="a">if</span> ok <span class="a">else</span> <span class="a">'blocked'</span>
+    save(st); write_dashboard()   <span class="m"># live dot flip</span>
+    <span class="a">if</span> <span class="a">not</span> ok <span class="a">and</span> auto: <span class="a">break</span>   <span class="m"># gate stops walk</span></div>
+      <p>Each runner is a thin wrapper that <code>subprocess.run</code>s the real tool in the correct interpreter: <b>parler</b> (demucs / CTC align / Kokoro / whisper), <b>qwentts</b> (pitch), plain <b>python3 + ffmpeg</b> (assemble, drill, validate, kits).</p>
+      <p>State is a single JSON per song: <code>builds/&lt;key&gt;.build_state.json</code>. On load, <code>_sync_steps</code> reconciles it against the code's <code>STEPS</code> so a reworded step or a new DAG entry reaches already-init'd songs.</p>
+    </div>
+    <div class="panel">
+      <h3>Surfaces &amp; entry points</h3>
+      <p><b>CLI</b> — the source of truth:</p>
+      <div class="cmd"><span class="c">manaoke_build.py</span> init &lt;key&gt; ...        <span class="m"># create state</span>
+<span class="c">manaoke_build.py</span> run &lt;key&gt; assemble   <span class="m"># one step</span>
+<span class="c">manaoke_build.py</span> run &lt;key&gt; <span class="a">--auto</span>      <span class="m"># walk to next gate</span>
+<span class="c">manaoke_build.py</span> rebuild &lt;key&gt; <span class="a">--why</span> &lt;sha8&gt;
+<span class="c">manaoke_build.py</span> dash              <span class="m"># regen dashboard</span></div>
+      <p><b>denmoku dashboard</b> (<code>builder/index.html</code>, file://) — a searchable album-art grid; tap a jacket → per-song Build + Gradient tabs. It only <em>renders</em> <code>build_state.json</code> + composes the copy-paste commands; Claude Code runs them. No local server.</p>
+      <p><b>Rebuild machinery</b> — <code>&lt;folder&gt;.deps.json</code> content-hash manifests let <code>rebuild --why &lt;clip&gt;</code> re-run only what a changed input touches; the dashboard shows stale/current chips per song.</p>
+    </div>
+  </div>
+
+  <div class="panel deploy" style="margin-top:16px">
+    <h3>The one ordering rule that isn't obvious from the step numbers</h3>
+    <p>The DAG is <b>not</b> strictly linear by index. <code>assemble</code> (6) runs before the audio steps (7–10) because <code>content_to_data.py</code> — invoked inside assemble — is what <em>writes the audio job list</em>. <code>drill_concat</code> (12) then runs after the clips exist, and <code>pitch</code> (11) slots alongside. So the real dependency spine is: <span class="chip">source → sync → author → <b style="color:var(--hub)">assemble (emits jobs)</b> → audio → pronunciation QA → drill_concat → enrich → <b style="color:var(--gate)">validate gate</b> → ship</span>. Re-running <code>assemble</code> regenerates <code>index.html</code>, so <code>drill_concat</code> + version-bump always re-run after it.</p>
+  </div>
+
+  <div class="foot">tools/songcraft/ · derived from manaoke_build.py STEPS + RUNNERS + do_run · 2026-07-05 · build pxvlvd</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Pitch-accent engine runtime. Canonically installed in the `qwentts` conda env
+# (/opt/homebrew/Caskroom/miniforge/base/envs/qwentts). The open_jtalk DICTIONARY
+# is VENDORED (data/openjtalk_dict.tar.xz, auto-extracted by _dict_bootstrap.py),
+# so nothing is ever downloaded at runtime — only this package needs installing.
+pyopenjtalk-plus==0.4.1.post8
+
+# Optional: enables the neural accent cross-check (run_marine=True in core.py).
+# Absent by design today — core.py silently skips it. Uncomment to add the
+# second-opinion (bundles/caches its own model on first use).
+# marine

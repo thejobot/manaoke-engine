@@ -1,0 +1,113 @@
+{
+  "song_number": 2,
+  "title_jp": "シルエット",
+  "title_en": "Silhouette",
+  "artist": "KANA-BOON",
+  "artist_en": "KANA-BOON",
+  "slug": "silhouette",
+  "youtube_id": "d1FA0Zq1k2A",
+  "level": "Beginner+",
+  "r2_folder": "Song 2 シルエット",
+  "podcast_file": "silhouette_podcast.mp3",
+
+  "sections": [
+    {
+      "id": "title",
+      "name": "Title",
+      "short_name": "Title",
+      "subtitle": "Title Breakdown",
+      "description": "\"Silhouette\" — a shape without detail",
+      "speak_en": "Title breakdown. The word silhouette in Japanese comes from the French. It represents the outline of something, the shape you can see but not the details.",
+      "context_lines": [],
+      "note": "Used as Naruto Shippuden OP16. The title captures the theme of chasing a dream you can barely see the outline of.",
+      "words": [
+        {
+          "jp": "シルエット",
+          "rom": "shiruetto",
+          "jp_speak": "シルエット",
+          "en": "silhouette",
+          "en_speak": "silhouette. A loanword from French. The outline or shadow of something.",
+          "particle": false
+        }
+      ]
+    },
+    {
+      "id": "v1",
+      "name": "Verse 1",
+      "short_name": "V1",
+      "subtitle": "Verse 1 — Chasing Dreams",
+      "description": "Running toward something you can't quite see",
+      "speak_en": "Verse 1. He's running toward something he can't quite see yet. The path ahead isn't clear but he keeps going.",
+      "context_lines": [
+        "いつだって何だって届きそうにないから走ってきたんだろう"
+      ],
+      "note": null,
+      "words": [
+        {
+          "jp": "いつだって",
+          "rom": "itsu datte",
+          "jp_speak": "いつだって",
+          "en": "always · no matter when",
+          "en_speak": "always, no matter when. An emphatic form meaning at any time, every time.",
+          "particle": false
+        },
+        {
+          "jp": "届きそう",
+          "rom": "todoki-sō",
+          "jp_speak": "届きそう",
+          "en": "seems reachable",
+          "en_speak": "seems like it could reach. The sou ending means it appears to or seems like.",
+          "particle": false
+        },
+        {
+          "jp": "にない",
+          "rom": "ni nai",
+          "jp_speak": "にない",
+          "en": "not likely to · negation",
+          "en_speak": "This grammar pattern negates the seeming. It seemed reachable but actually isn't.",
+          "particle": true
+        },
+        {
+          "jp": "走ってきた",
+          "rom": "hashitte kita",
+          "jp_speak": "走ってきた",
+          "en": "been running · continuous",
+          "en_speak": "has been running. The te kita pattern means the action has been ongoing up until now.",
+          "particle": false
+        }
+      ]
+    }
+  ],
+
+  "grammar": [
+    {
+      "pattern": "～そうにない — \"doesn't seem like\"",
+      "explanation": "Negates the appearance/likelihood. Seems like it won't happen.",
+      "example": "届き<strong>そうにない</strong> → \"doesn't seem reachable\""
+    },
+    {
+      "pattern": "～てきた — \"has been doing\"",
+      "explanation": "Te-form + kita. An action that started in the past and continues to now.",
+      "example": "走っ<strong>てきた</strong> → \"has been running (up to now)\""
+    }
+  ],
+
+  "trivia": [
+    {
+      "title": "🎵 Naruto Shippuden OP16",
+      "text": "Silhouette was used as the 16th opening theme of Naruto Shippuden, airing from 2015. It played during some of the most emotionally intense arcs of the series, cementing it as one of the most beloved anime openings of all time."
+    },
+    {
+      "title": "📈 300 Million+ Views",
+      "text": "The official music video has accumulated over 300 million views on YouTube, making it one of KANA-BOON's most popular songs globally."
+    }
+  ],
+
+  "podcast_script": [
+    ["HOST_A", "Hey welcome back. Today we're looking at a song that... honestly, if you watched Naruto, you already know this one in your bones."],
+    ["HOST_B", "Yes! KANA-BOON. And the song is..."],
+    ["JP", "シルエット"],
+    ["HOST_B", "Shiruetto. Silhouette. And it's not just an anime opening, it's genuinely a beautiful piece of songwriting."],
+    ["HOST_A", "Let's get into the first line..."]
+  ]
+}

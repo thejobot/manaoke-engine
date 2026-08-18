@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+.env
+.node_tools/
+# per-song working state and inputs — never in the engine repo
+tools/songcraft/builds/
+tools/songcraft/corpus/
+tools/songcraft/builder/cache/
+tools/songcraft/builder/joblogs/
+tools/songcraft/builder/auditions/
+tools/songcraft/.apple-lyrics.json
+tools/songcraft/providers.json

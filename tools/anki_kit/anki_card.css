@@ -1,0 +1,34 @@
+.card {
+  font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+               "Yu Gothic", "Noto Sans JP", "Meiryo", sans-serif;
+  font-size: 20px; text-align: center; color: #1a1a1a; background: #faf8f4;
+  padding: 22px 16px;
+}
+/* AnkiMobile/AnkiDroid use .nightMode (camelCase); desktop uses .night_mode */
+.nightMode.card, .night_mode.card { color: #e8e6e2; background: #1c1c1e; }
+
+.sec { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+       color: #b06a3a; font-weight: 700; margin-bottom: 14px; }
+.nightMode .sec, .night_mode .sec { color: #e0945c; }
+
+.jp { font-size: 58px; line-height: 1.15; font-weight: 700; margin: 6px 0 4px; }
+.jp-small { font-size: 40px; font-weight: 700; margin: 6px 0; }
+.reading { font-size: 22px; color: #8a7d6a; font-style: italic; margin: 2px 0 14px; }
+.nightMode .reading, .night_mode .reading { color: #b3a892; }
+
+.meaning { font-size: 30px; font-weight: 600; margin: 10px 0 4px; }
+.prompt-en { font-size: 32px; font-weight: 600; margin: 10px 0; }
+
+hr { border: none; border-top: 1px solid #e0d8ca; margin: 18px auto; width: 70%; }
+.nightMode hr, .night_mode hr { border-top-color: #3a3a3c; }
+
+.hint { font-size: 16px; color: #6f6655; margin: 8px auto; max-width: 30em; }
+.nightMode .hint, .night_mode .hint { color: #a89e8b; }
+.context { font-size: 15px; color: #837a68; font-style: italic; margin: 12px auto 4px;
+           max-width: 32em; line-height: 1.5; }
+.nightMode .context, .night_mode .context { color: #9c9282; }
+
+.audio { margin: 12px 0; }
+.song { font-size: 12px; color: #b6ad9b; margin-top: 18px; }
+.tag-particle { display:inline-block; font-size:11px; letter-spacing:.08em;
+   color:#9a8f7c; border:1px solid #d9cfbc; border-radius:10px; padding:1px 8px; margin-top:8px; }

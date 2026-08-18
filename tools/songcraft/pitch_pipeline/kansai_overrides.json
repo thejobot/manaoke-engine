@@ -1,0 +1,10 @@
+{
+  "_comment": "Hand-curated Kansai dialect pitch accents. pyopenjtalk applies Tokyo-standard rules to these and is often wrong. Values curated from cross-referencing 京阪アクセント辞典 references, Kansai dialect YouTube reviewers, and standard Osaka-speaker recordings. Marked confidence=kansai so the UI can show a 'Kansai variant' note.",
+
+  "なんぼ":   { "accent": 0, "morae": ["ナ","ン","ボ"], "note": "Kansai for どんなに" },
+  "アタシ":   { "accent": 0, "morae": ["ア","タ","シ"], "note": "katakana stylization of あたし; accent like Tokyo" },
+  "やろか":   { "accent": 2, "morae": ["ヤ","ロ","カ"], "note": "Kansai for だろうか; soft wondering" },
+  "かってね": { "accent": 0, "morae": ["カ","ッ","テ","ネ"], "note": "Kansai casual hearsay; ~ flat with rising ね" },
+  "ベベ":     { "accent": 1, "morae": ["ベ","ベ"], "note": "Kansai baby-talk for clothes; atamadaka" },
+  "あんた":   { "accent": 0, "morae": ["ア","ン","タ"], "note": "casual contraction of あなた; Kansai-tinged in this song" }
+}

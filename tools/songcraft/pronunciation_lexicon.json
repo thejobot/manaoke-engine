@@ -1,0 +1,206 @@
+{
+ "version": 1,
+ "words": {
+  "こと": {
+   "surface": "こと",
+   "kana": "こと",
+   "allow": ["curated"],
+   "carrier": "そのことについて話した",
+   "clip": null,
+   "reason": "Qwen carrier-phrase cut window ate preceding words; shipped clip said 大事なこと; caught by large-v3 read-back 2026-07-03",
+   "added": "2026-07-03",
+   "fed_by": "readback"
+  },
+  "ない": {
+   "surface": "ない",
+   "kana": "ない",
+   "allow": ["curated", "qwen", "aivis"],
+   "carrier": "何もない場所",
+   "clip": null,
+   "reason": "whisper read-back flagged the TTS ない (odoriko/shinunoga) 2026-07-03; replaced from the human vocal dictionary",
+   "added": "2026-07-03",
+   "fed_by": "readback"
+  },
+  "きえぬ": {
+   "surface": "消えぬ",
+   "kana": "きえぬ",
+   "carrier": "消えぬ思い出がある",
+   "clip": null,
+   "reason": "Kokoro read back ディエノ/次への in two independent whisper passes (podcast+audio agents 2026-07-04); fixed via strict qwen carrier cut, read-back キエヌ exact",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "うれう": {
+   "surface": "憂う",
+   "kana": "うれう",
+   "carrier": null,
+   "clip": null,
+   "reason": "isolated rare word defeats whisper read-back on every engine (Kokoro/Qwen/Aivis 2026-07-04); ship AivisSpeech Aida render, engine-confirmed moras ウレウ — verify by engine metadata not read-back",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "してた": {
+   "surface": "してた",
+   "kana": "してた",
+   "carrier": null,
+   "clip": null,
+   "reason": "Kokoro am_michael read back voiced しでた (2026-07-04 silhouette reseg); Qwen strict carrier cuts failed isolation; shipped AivisSpeech Aida (read-back exact). Route future renders to aivis or curated.",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "したい": {
+   "surface": "したい",
+   "kana": "したい",
+   "carrier": null,
+   "clip": null,
+   "reason": "JPod101 dict HIT is the 死体 (corpse) lemma — accent-risk homograph, removed from library cache; Kokoro read back 次第. Shipped Qwen strict carrier cut of 勉強をしたい (read-back exact). Never dict-route this surface.",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "ディジ": {
+   "surface": "ディジー",
+   "kana": "ディジー",
+   "carrier": null,
+   "clip": null,
+   "reason": "Kokoro jf_alpha read back 大事 for isolated ディジー (headlong 2026-07-04); shipped Qwen Ono_Anna strict carrier cut of ディジーな気分だった (read-back exact)",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "稲妻": {
+   "surface": "稲妻",
+   "kana": "稲妻",
+   "allow": ["qwen", "aivis"],
+   "carrier": "稲妻が僕にタッチした",
+   "clip": null,
+   "reason": "JPod101 dict clip failed large-v3 read-back twice (heard ひなずま, plain+prompted, headlong 2026-07-04) — suspect audio removed from library cache; Qwen strict cuts failed isolation; shipped AivisSpeech Aida いなずま (whisper heard 稲妻 exact)",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "ついて": {
+   "surface": "ついて",
+   "kana": "ついて",
+   "carrier": "机に肘をついて話す",
+   "clip": null,
+   "reason": "Kokoro jf_alpha read back づいて/続いて for isolated ついて (headlong 付いて 2026-07-04, plain+prompted whisper); shipped Qwen strict carrier cut of 机に肘をついて話す (read-back exact)",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "いつか": {
+   "surface": "いつか",
+   "kana": "いつか",
+   "carrier": "いつかの手首のリボン",
+   "clip": null,
+   "reason": "Kokoro jf_alpha read back 飯塚/いいづか for isolated いつか (headlong 2026-07-04, plain+prompted whisper); shipped Qwen strict carrier cut of the song's own line いつかの手首のリボン (read-back exact)",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "散らかした": {
+   "surface": "散らかした",
+   "kana": "散らかした",
+   "carrier": null,
+   "clip": null,
+   "reason": "Kokoro jf_alpha read back じらかした for isolated 散らかした (headlong 2026-07-04, plain+prompted whisper); Qwen strict cuts kept swallowing the preceding を; shipped AivisSpeech Aida ちらかした (read-back heard 散らかした exact)",
+   "added": "2026-07-04",
+   "fed_by": "operator"
+  },
+  "きと": {
+   "surface": "きっと",
+   "kana": "きっと",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard ギト (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "なて": {
+   "surface": "なって",
+   "kana": "なって",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard なて (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "とこ": {
+   "surface": "とこ",
+   "kana": "とこ",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard どこ (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "とた": {
+   "surface": "取った",
+   "kana": "とった",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard どうだ (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "さぞ": {
+   "surface": "さぞ",
+   "kana": "さぞ",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard さあぞ (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "ひび": {
+   "surface": "日々",
+   "kana": "ひび",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard ひべ (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "まつ": {
+   "surface": "待つ",
+   "kana": "まつ",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard まず (ema build); pinned to Qwen carrier-cut",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "セヨ": {
+   "surface": "セヨ",
+   "kana": "セヨ",
+   "carrier": null,
+   "clip": null,
+   "reason": "Kokoro read back 西洋 for isolated セヨ (inochi コイセヨ title split); Qwen strict cuts failed isolation; AivisSpeech Aida clip verified せよ by large-v3 read-back",
+   "added": "2026-07-07",
+   "fed_by": "operator"
+  },
+  "札束": {
+   "surface": "札束",
+   "kana": "札束",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard サーズタバ (koiseyootome build, 2026-07-30)",
+   "added": "2026-07-30",
+   "fed_by": "operator"
+  },
+  "着て": {
+   "surface": "着て",
+   "kana": "着て",
+   "carrier": null,
+   "clip": null,
+   "reason": "read-back heard 期待 (koiseyootome build, 2026-07-30)",
+   "added": "2026-07-30",
+   "fed_by": "operator"
+  },
+  "まて": {
+   "surface": "舞って",
+   "kana": "まって",
+   "carrier": null,
+   "clip": null,
+   "reason": "pinned via install_word (strawberry-anniversary word_s2_matte)",
+   "added": "2026-07-30",
+   "fed_by": "operator"
+  }
+ }
+}

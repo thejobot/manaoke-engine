@@ -1,0 +1,31 @@
+jmdict_headwords.txt.gz — the set of every headword (kanji <keb> + reading <reb>
+form) extracted from JMdict, used by validate_segmentation.py to decide offline
+whether a study card is a real dictionary word (replacing the jisho.org API).
+
+Source: JMdict / JMdict_e, © Electronic Dictionary Research and Development Group
+(EDRDG), https://www.edrdg.org/jmdict/j_jmdict.html
+Licence: Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0).
+
+Regenerate: download http://ftp.edrdg.org/pub/Nihongo/JMdict_e.gz and extract the
+union of all <keb> and <reb> element texts, sorted-unique, gzipped (see the git
+history of this directory for the one-liner).
+
+jmdict_gloss.json.gz (added 2026-07-11; REBUILT reading-aware 2026-07-29) —
+compact map distilled from the SAME JMdict_e.gz, keyed by every <keb> and <reb>:
+
+  {headword: [{"r": [reading, ...], "g": [gloss, ...], "p": 1}, ...]}
+
+one record per entry that spells itself that way, priority-tagged
+(news1/ichi1/spec1/gai1) records first, each carrying the first 2
+non-archaic/rare senses × first 2 <gloss> strings joined with " / ".
+
+The 2026-07-11 version was {headword: [gloss, ...]} — one winner per spelling,
+no readings — and a spelling several entries share went to whichever carried a
+priority tag. That is how マリーゴールド's skeleton came out with 風 = "swing /
+shake", 空 = "emptiness", こと = "koto, the 13-stringed zither", この = "nine".
+scaffold.py now passes the card's reading (and, for a kana surface, the UniDic
+lemma) and picks the sense that actually reads that way. It still only DRAFTS —
+the author reviews every gloss.
+
+Regenerate: python3 tools/songcraft/build_gloss_map.py /path/to/JMdict_e.gz
+Same source, same EDRDG CC BY-SA 4.0 licence as above.

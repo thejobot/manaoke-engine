@@ -1,0 +1,46 @@
+@page { size: letter; margin: 0; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html, body { margin: 0; padding: 0; }
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; }
+
+.sheet {
+  width: 8.5in; height: 11in; padding: 0.5in 0.75in;     /* equal L/R is required for the long-edge mirror */
+  display: grid;
+  grid-template-columns: repeat(__COLS__, 3.5in);
+  grid-template-rows: repeat(__ROWS__, 2.5in);
+  gap: 0;
+  break-after: page; page-break-after: always;
+}
+.sheet:last-child { break-after: auto; page-break-after: auto; }  /* no trailing blank page */
+
+.card {
+  width: 3.5in; height: 2.5in; position: relative; overflow: hidden;
+  break-inside: avoid; page-break-inside: avoid;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 0.28in 0.26in;
+  outline: 0.4pt solid #c9c9c9;     /* faint cut guide (outline prints without printBackground) */
+}
+.blank { outline: 0.4pt solid #e6e6e6; }
+
+.corner { position: absolute; top: 0.14in; font-size: 8.5pt; color: #9a9488; letter-spacing: .02em; }
+.corner.tl { left: 0.18in; }
+.corner.tr { right: 0.18in; }
+.sec { color: __ACCENT__; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 8pt; }
+.ptag { display:block; color:#9a8f7c; font-weight:600; letter-spacing:.06em; font-size:6.5pt; margin-top:1px; }
+
+/* FRONT */
+.jp { font-weight: 700; color: #111; line-height: 1.1;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Meiryo", sans-serif; }
+.jp-xl { font-size: 56pt; }
+.jp-lg { font-size: 44pt; }
+.jp-md { font-size: 32pt; }
+.jp-sm { font-size: 24pt; }
+
+/* BACK */
+.reading { font-family: Georgia, "Times New Roman", serif; font-style: italic;
+  font-size: 15pt; color: #8a7d6a; margin-bottom: 2pt; }
+.meaning { font-family: Georgia, "Times New Roman", serif; font-weight: 700;
+  font-size: 22pt; color: #111; line-height: 1.15; margin-bottom: 6pt; }
+.hint { font-size: 9.5pt; color: #5f574a; line-height: 1.35; max-width: 2.9in; margin: 0 auto 5pt; }
+.ctx { font-family: Georgia, serif; font-style: italic; font-size: 8.5pt;
+  color: #877e6c; line-height: 1.35; max-width: 3in; margin: 0 auto; }
